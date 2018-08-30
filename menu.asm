@@ -1,5 +1,5 @@
 .data 
-	TEXTO: .asciiz "\nEscolha uma opcao:\n"
+	TEXTO: .asciiz "\n 1 - Cadastrar Abastecimento;\n 2 - Excluir Abastecimento;\n 3 - Exibir Abastecimento;\n 4 - Exibir Consumo Medio; \n 5 - Exibir Preco Medio\n 6 - Sair; \n\n Escolha uma opcao:\n"
 	TEXTO_INVALIDO: .asciiz "\nOpcao Invalida!\n"
 	##### textos usados como auxiliar de teste #########
 	TEXTO1: .asciiz "\nTexto 1\n"
