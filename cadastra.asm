@@ -1,5 +1,6 @@
 .data 
-gastos: .space 560
+.align 4
+gastos: .space 440
 gastosFim: .word 0
 idCont: .word 0
 idContAux: .word 0
@@ -121,8 +122,9 @@ la $a0, kmMsg
 syscall 
 addi $v0, $zero, 5 # para receber um inteiro colocar codigo 5
 syscall
-addi $s1, $s1, 1 #soma 1 pra ir pra proxima posição
+addi $s1, $s1, 4 #soma 1 pra ir pra proxima posição
 sw $s1, gastosFim # guarda o endereço novo
+
 # RECEBE quantidade de combustivel
 addi $v0, $zero, 4 
 la $a0, qtdCombustivelMsg 
@@ -130,7 +132,8 @@ syscall
 addi $v0, $zero, 6
 syscall
 addi $s1, $s1, 4
-lw $s1, gastosFim #le o endereço do ultimo gasto cadastrado
+sw $s1, gastosFim
+
 # RECEBE PRECO
 addi $v0, $zero, 4 
 la $a0, valorMsg 
@@ -140,14 +143,14 @@ syscall
 lw $s1, gastosFim #le o endereço do ultimo gasto cadastrado
 s.s $f0, 0($s1)  #carrega a data
 addi $s1, $s1, 4 #soma 1 pra ir pra proxima posição
-sw $s1, gastosFim # guarda o endereço novo
+sw $s1, gastosFim # guarda o endereço 
+
 jal quebraLinhaProcedimento
 
 j fim
 
 ################################### LISTAR DESPESA #############################
 opcao3: 
-
 addi $t7, $zero, 365
 addi $t6, $zero, 30
 #####inicio do loop##############
@@ -182,71 +185,86 @@ op3Troca: ####### joga o i na pilha
 addi $a1, $a1, -24
 
 #colocando na pilha
+#dia
 addi $sp, $sp, -4
 lw $t0, 0($a1)
 sw $t0, 0($sp)
+#mes
 addi $sp, $sp, -4
 lw $t0, 4($a1)
 sw $t0, 0($sp)
+#ano
 addi $sp, $sp, -4
 lw $t0, 8($a1)
 sw $t0, 0($sp)
+#nome
 addi $sp, $sp, -4
 lw $t0, 12($a1)
 sw $t0, 0($sp)
 addi, $sp, $sp, -4
 lw $t0, 16($a1)
 sw $t0, 0($sp)
+#km
 addi $sp, $sp, -4
 lw $t0, 20($a1)
 sw $t0, 0($sp)
+#quantidade
 addi $sp, $sp, -4
 l.s $f0, 24($a1)
 s.s $f0, 0($sp)
+#valor
 addi $sp, $sp, -4
 l.s $f0, 28($a1)
 s.s $f0, 0($sp)
 
+
 # substituindo o i+1 por i
+#dia
 addi $a1, $a1, 32
 lw $t0, 0($a1)
+#mes
 sw $t0, -32($a1)
 lw $t0, 4($a1)
+#ano
 sw $t0, -28($a1)
 lw $t0, 8($a1)
+#nome
 sw $t0, -24($a1)
 lw $t0, 12($a1)
 sw $t0, -20($a1)
 lw $t0, 16($a1)
 sw $t0, -16($a1)
-lw $t0, 20($a1)
+#km
 sw $t0, -12($a1)
-
+lw $t0, 20($a1)
+#qtd
 l.s $f0, 24($a1)
 s.s $f0, -8($a1)
+#valor
 l.s $f0, 28($a1)
 s.s $f0, -4($a1)
 
 # i+1 = pilha
+#valor
 l.s $f0, 0($sp)
 s.s $f0, 28($a1)
 addi $sp, $sp, 4
-
+#qtd
 l.s $f0, 0($sp)
 s.s $f0, 24($a1)
 addi $sp, $sp, 4
-
+#km
 lw $t0, 0($sp)
 sw $t0, 20($a1)
 addi $sp, $sp, 4
-
+#nome
 lw $t0, 0($sp)
 sw $t0, 16($a1)
 addi $sp, $sp, 4
-
 lw $t0, 0($sp)
 sw $t0, 12($a1)
 addi $sp, $sp, 4
+#data
 lw $t0, 0($sp)
 sw $t0, 8($a1)
 addi $sp, $sp, 4
@@ -298,24 +316,8 @@ syscall
 addi $a0, $s0, 0
 li $v0, 4
 syscall
-jal quebraLinhaProcedimento
-addi $s0, $s0, 16 # começa o km
-li $v0, 4
-la $a0, kmMsg
-syscall
-lb $a0, 1($s0)
-li $v0, 1
-syscall
-jal quebraLinhaProcedimento
-addi $s0, $s0, 20 # começa o qtd de combustivel
-li $v0, 4
-la $a0, qtdCombustivelMsg
-syscall
-l.s $f12, 0($s0)
-li $v0, 2
-syscall
-jal quebraLinhaProcedimento
-addi $s0, $s0, 24 # começa o preco
+
+addi $s0, $s0, 16 # começa o valor
 li $v0, 4
 la $a0, valorMsg
 syscall
@@ -324,22 +326,17 @@ li $v0, 2
 syscall
 addi $s0, $s0, 4 #começa o proximo
 jal quebraLinhaProcedimento
+jal quebraLinhaProcedimento
 j comparacaoOpcao3 
 fimOpcao3:
-
-
-addi $v0, $zero, 12 
-syscall 
 
 jal quebraLinhaProcedimento
 
 j fim 
 
-
+##############################
 fim:
 j mainAux
-
-
 
 
 ## fun��es
